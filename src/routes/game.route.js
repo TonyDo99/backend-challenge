@@ -30,7 +30,7 @@ router.get('/', getGames);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: A single game title
@@ -53,8 +53,6 @@ router.get('/:id', getGameById);
  *             properties:
  *               title:
  *                 type: string
- *               genre:
- *                 type: string
  *     responses:
  *       201:
  *         description: The created game title
@@ -71,7 +69,7 @@ router.post('/', createGame);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -80,8 +78,6 @@ router.post('/', createGame);
  *             type: object
  *             properties:
  *               title:
- *                 type: string
- *               genre:
  *                 type: string
  *     responses:
  *       200:
@@ -101,7 +97,7 @@ router.put('/:id', updateGame);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       204:
  *         description: Game title deleted

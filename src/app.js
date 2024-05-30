@@ -17,7 +17,13 @@ app.use('/game', authenticateToken, gameRoutes);
 app.use('/auth', authRoutes);
 
 // Swagger
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocs, {
+    explorer: true,
+  })
+);
 
 // Start the server
 app.listen(PORT, () => {

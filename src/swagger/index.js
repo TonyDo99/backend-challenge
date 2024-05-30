@@ -1,4 +1,4 @@
-// swagger/swaggerConfig.js
+import { join } from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
@@ -21,9 +21,8 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['../routes/index.js'],
+  apis: [join(process.cwd(), 'src/routes/*.route.js')],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
 export { swaggerUi, swaggerDocs };

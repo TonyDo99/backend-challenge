@@ -16,11 +16,4 @@ export default new EntitySchema({
     },
     ...abstractEntity,
   },
-  relations: {
-    tb_user: {
-      target: 'UserSchema',
-      type: 'many-to-many',
-      joinTable: true,
-    },
-  },
 });

@@ -19,11 +19,4 @@ export default new EntitySchema({
     },
     ...abstractEntity,
   },
-  relations: {
-    tb_game: {
-      target: 'GameSchema',
-      type: 'many-to-many',
-      joinTable: true,
-    },
-  },
 });
