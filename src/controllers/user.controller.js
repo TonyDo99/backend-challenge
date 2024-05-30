@@ -33,7 +33,11 @@ const userRegister = async (req, res) => {
       message: 'User has register successfully !',
     });
   } catch (error) {
-    HandlerResponse(res, { status: false, data: null, message: error.message });
+    HandlerResponse(res.status(404), {
+      status: false,
+      data: null,
+      message: error.message,
+    });
   }
 };
 
@@ -45,30 +49,38 @@ const userRegister = async (req, res) => {
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const userLogin = async (req, res) => {
-  const { username, password } = req.body;
-  const user = await userRepository.findOneBy({ username });
+  try {
+    const { username, password } = req.body;
+    const user = await userRepository.findOneBy({ username });
 
-  if (user == null || !(await bcrypt.compare(password, user.password))) {
-    return HandlerResponse(res, {
+    if (user == null || !(await bcrypt.compare(password, user.password))) {
+      return HandlerResponse(res, {
+        status: false,
+        data: null,
+        message: 'Invalid credentials',
+      });
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: '1h',
+      }
+    );
+
+    return HandlerResponse(res.status(200), {
+      status: true,
+      data: { accessToken },
+      message: 'Access token',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
       status: false,
       data: null,
-      message: 'Invalid credentials',
+      message: error.message,
     });
   }
-
-  const accessToken = jwt.sign(
-    { id: user.id, username: user.username },
-    process.env.ACCESS_TOKEN_SECRET,
-    {
-      expiresIn: '1h',
-    }
-  );
-
-  return HandlerResponse(res.status(200), {
-    status: true,
-    data: { accessToken },
-    message: 'Access token',
-  });
 };
 
 export { userRegister, userLogin };

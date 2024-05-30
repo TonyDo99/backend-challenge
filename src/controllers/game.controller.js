@@ -12,12 +12,20 @@ const gameRepository = AppDataSource.getRepository('GameSchema');
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const getGames = async (_, res) => {
-  const games = await gameRepository.find();
-  HandlerResponse(res.status(200), {
-    status: true,
-    data: games,
-    message: 'Games it return !',
-  });
+  try {
+    const games = await gameRepository.find();
+    HandlerResponse(res.status(200), {
+      status: true,
+      data: games,
+      message: 'Games it return !',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
+      status: false,
+      data: null,
+      message: error.message,
+    });
+  }
 };
 
 /**
@@ -28,21 +36,29 @@ const getGames = async (_, res) => {
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const getGameById = async (_, res) => {
-  const game = await gameRepository.findOneBy({
-    id: res.params.id,
-  });
-  if (!game) {
-    return HandlerResponse(res.status(403), {
+  try {
+    const game = await gameRepository.findOneBy({
+      id: res.params.id,
+    });
+    if (!game) {
+      return HandlerResponse(res.status(403), {
+        status: false,
+        data: null,
+        message: 'Game title not found',
+      });
+    }
+    HandlerResponse(res.status(200), {
+      status: true,
+      data: game,
+      message: 'Game was founded !',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
       status: false,
       data: null,
-      message: 'Game title not found',
+      message: error.message,
     });
   }
-  HandlerResponse(res.status(200), {
-    status: true,
-    data: game,
-    message: 'Game was founded !',
-  });
 };
 
 /**
@@ -53,14 +69,22 @@ const getGameById = async (_, res) => {
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const createGame = async (req, res) => {
-  const game = gameRepository.create(req.body);
-  const savedGame = await gameRepository.save(game);
+  try {
+    const game = gameRepository.create(req.body);
+    const savedGame = await gameRepository.save(game);
 
-  HandlerResponse(res.status(201), {
-    status: true,
-    data: savedGame,
-    message: 'Game was created success !',
-  });
+    HandlerResponse(res.status(201), {
+      status: true,
+      data: savedGame,
+      message: 'Game was created success !',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
+      status: false,
+      data: null,
+      message: error.message,
+    });
+  }
 };
 
 /**
@@ -71,25 +95,33 @@ const createGame = async (req, res) => {
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const updateGame = async (req, res) => {
-  const game = await gameRepository.findOneBy({
-    id: req.params.id,
-  });
-  if (!game) {
-    return HandlerResponse(res.status(404), {
+  try {
+    const game = await gameRepository.findOneBy({
+      id: req.params.id,
+    });
+    if (!game) {
+      return HandlerResponse(res.status(404), {
+        status: false,
+        data: savedGame,
+        message: 'Game title not found !',
+      });
+    }
+
+    gameRepository.merge(game, req.body);
+    const updatedGame = await gameRepository.save(game);
+
+    HandlerResponse(res.status(200), {
+      status: true,
+      data: updatedGame,
+      message: 'Game was updated success !',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
       status: false,
-      data: savedGame,
-      message: 'Game title not found !',
+      data: null,
+      message: error.message,
     });
   }
-
-  gameRepository.merge(game, req.body);
-  const updatedGame = await gameRepository.save(game);
-
-  HandlerResponse(res.status(200), {
-    status: true,
-    data: updatedGame,
-    message: 'Game was updated success !',
-  });
 };
 
 /**
@@ -100,21 +132,29 @@ const updateGame = async (req, res) => {
  * @returns {Promise<void>} A promise that resolves to void.
  */
 const deleteGame = async (req, res) => {
-  const result = await gameRepository.softDelete({
-    id: req.params.id,
-  });
-  if (result.affected === 0) {
-    return HandlerResponse(res.status(404), {
+  try {
+    const result = await gameRepository.softDelete({
+      id: req.params.id,
+    });
+    if (result.affected === 0) {
+      return HandlerResponse(res.status(404), {
+        status: false,
+        data: null,
+        message: 'Delete game unsuccessfully !',
+      });
+    }
+    HandlerResponse(res.status(200), {
+      status: true,
+      data: result,
+      message: 'Delete game successfully !',
+    });
+  } catch (error) {
+    HandlerResponse(res.status(404), {
       status: false,
       data: null,
-      message: 'Delete game unsuccessfully !',
+      message: error.message,
     });
   }
-  HandlerResponse(res.status(200), {
-    status: true,
-    data: result,
-    message: 'Delete game successfully !',
-  });
 };
 
 export { getGames, getGameById, createGame, updateGame, deleteGame };
