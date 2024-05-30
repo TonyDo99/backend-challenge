@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import GameSchema from '../entities/game.entity.js';
-import UserSchema from '../entities/user.entity.js';
+import * as Entities from '../entities/index.entity.js';
 
 import {
   DB_HOST,
@@ -20,7 +19,7 @@ export const AppDataSource = new DataSource({
   database: DB_DATABASE,
   synchronize: true,
   logging: false,
-  entities: [GameSchema, UserSchema],
+  entities: [Entities],
   migrations: [],
   subscribers: [],
 });
