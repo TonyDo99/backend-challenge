@@ -1,15 +1,11 @@
-version: '2'
-
-networks:
-  app-tier:
-    driver: bridge
+version: '3.9'
 
 services:
   backend:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     ports:
       - '3000:3000'
     env_file:
@@ -19,25 +15,22 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    networks:
-      - app-tier
 
   database:
     container_name: database_container
-    image: docker.io/bitnami/postgresql:14
-    restart: always
+    image: postgres
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      - POSTGRESQL_USERNAME=phatdo
-      - POSTGRESQL_PASSWORD=123123
-      - POSTGRESQL_DATABASE=ecommerce
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_DATABASE
     ports:
       - '54325:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d
-    networks:
-      - app-tier
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:
-    driver: local
