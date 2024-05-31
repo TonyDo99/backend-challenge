@@ -6,8 +6,12 @@ import {
   getGames,
   updateGame,
 } from '../controllers/game.controller.js';
+import { body, param } from 'express-validator';
 
 const router = express.Router();
+
+export const createValidator = [body('title').notEmpty().isString()];
+export const paramsValidator = [param('id').exists()];
 
 /**
  * @swagger
@@ -37,7 +41,7 @@ router.get('/', getGames);
  *       404:
  *         description: Game title not found
  */
-router.get('/:id', getGameById);
+router.get('/:id', ...createValidator, getGameById);
 
 /**
  * @swagger
@@ -57,7 +61,7 @@ router.get('/:id', getGameById);
  *       201:
  *         description: The created game title
  */
-router.post('/', createGame);
+router.post('/', ...createValidator, createGame);
 
 /**
  * @swagger
@@ -85,7 +89,7 @@ router.post('/', createGame);
  *       404:
  *         description: Game title not found
  */
-router.put('/:id', updateGame);
+router.put('/:id', ...paramsValidator, updateGame);
 
 /**
  * @swagger
@@ -104,6 +108,6 @@ router.put('/:id', updateGame);
  *       404:
  *         description: Game title not found
  */
-router.delete('/:id', deleteGame);
+router.delete('/:id', ...paramsValidator, deleteGame);
 
 export default router;

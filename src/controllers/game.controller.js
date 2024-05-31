@@ -14,6 +14,7 @@ const gameRepository = AppDataSource.getRepository('GameSchema');
 const getGames = async (_, res) => {
   try {
     const games = await gameRepository.find();
+
     HandlerResponse(res.status(200), {
       status: true,
       data: games,

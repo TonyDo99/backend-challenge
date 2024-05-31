@@ -1,7 +1,19 @@
 import express from 'express';
+import { body } from 'express-validator';
 import { userLogin, userRegister } from '../controllers/user.controller.js';
 
 const router = express.Router();
+
+export const authValidator = [
+  body('username').notEmpty().isString(),
+  body('password').notEmpty().isString().isStrongPassword({
+    minLength: 8,
+    minUppercase: 2,
+    minLowercase: 2,
+    minSymbols: 2,
+    minNumbers: 2,
+  }),
+];
 
 /**
  * @swagger
@@ -23,7 +35,7 @@ const router = express.Router();
  *       201:
  *         description: The created user
  */
-router.post('/register', userRegister);
+router.post('/register', ...authValidator, userRegister);
 
 /**
  * @swagger
@@ -45,6 +57,6 @@ router.post('/register', userRegister);
  *       200:
  *         description: The logged in user
  */
-router.post('/login', userLogin);
+router.post('/login', ...authValidator, userLogin);
 
 export default router;

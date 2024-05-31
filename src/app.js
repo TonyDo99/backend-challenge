@@ -1,13 +1,17 @@
 import express from 'express';
 import cors from 'cors';
-import { PORT } from './config/index.js';
+import rootConfiguration, { validateSchema } from '../src/config/index.js';
 import gameRoutes from './routes/game.route.js';
 import authRoutes from './routes/auth.route.js';
 import { swaggerUi, swaggerDocs } from './swagger/index.js';
 import { authenticateToken } from './middlewares/auth.js';
 
-const app = express();
+// validation configuration
+validateSchema.validateAsync({
+  ...rootConfiguration(),
+});
 
+const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -26,6 +30,6 @@ app.use(
 );
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(rootConfiguration().PORT, () => {
+  console.log(`Server is running on port ${rootConfiguration().PORT}`);
 });

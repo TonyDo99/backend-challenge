@@ -2,21 +2,15 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as Entities from '../entities/index.entity.js';
 
-import {
-  DB_HOST,
-  DB_PORT,
-  DB_USERNAME,
-  DB_PASSWORD,
-  DB_DATABASE,
-} from '../config/index.js';
+import rootConfiguration from '../config/index.js';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: DB_HOST,
-  port: DB_PORT,
-  username: DB_USERNAME,
-  password: DB_PASSWORD,
-  database: DB_DATABASE,
+  host: rootConfiguration().DB_HOST,
+  port: rootConfiguration().DB_PORT,
+  username: rootConfiguration().DB_USERNAME,
+  password: rootConfiguration().DB_PASSWORD,
+  database: rootConfiguration().DB_DATABASE,
   synchronize: true,
   logging: false,
   entities: [Entities],

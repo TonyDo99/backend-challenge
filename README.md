@@ -24,11 +24,11 @@ Create a .env file in the root of the project and add the following environment 
 
 ```javascript
 PORT = 3000;
-DB_HOST = database;
+DB_HOST = localhost; // Need replace to name of container if running docker compose;
 DB_PORT = 5432;
 DB_USERNAME = yourusername;
 DB_PASSWORD = yourpassword;
-DB_DATABASE = gametitlesdb;
+DB_DATABASE = challenge;
 ACCESS_TOKEN_SECRET = your_jwt_secret;
 ```
 
