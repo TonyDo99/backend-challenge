@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import rootConfiguration, { validateSchema } from '../src/config/index.js';
+import rootConfiguration, { validateSchema } from './configs/index.js';
 import gameRoutes from './routes/game.route.js';
 import authRoutes from './routes/auth.route.js';
 import { swaggerUi, swaggerDocs } from './swagger/index.js';

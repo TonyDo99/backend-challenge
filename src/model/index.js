@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as Entities from '../entities/index.entity.js';
 
-import rootConfiguration from '../config/index.js';
+import rootConfiguration from '../configs/index.js';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',

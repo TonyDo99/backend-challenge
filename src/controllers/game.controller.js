@@ -1,5 +1,4 @@
 import { AppDataSource } from '../model/index.js';
-import { HandlerResponse } from '../utils/response.js';
 
 // Inject repository
 const gameRepository = AppDataSource.getRepository('GameSchema');
@@ -15,13 +14,13 @@ const getGames = async (_, res) => {
   try {
     const games = await gameRepository.find();
 
-    HandlerResponse(res.status(200), {
+    res.status(200).json({
       status: true,
       data: games,
       message: 'Games it return !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(400).json({
       status: false,
       data: null,
       message: error.message,
@@ -42,19 +41,20 @@ const getGameById = async (_, res) => {
       id: res.params.id,
     });
     if (!game) {
-      return HandlerResponse(res.status(403), {
+      return res.status(403).json({
         status: false,
         data: null,
         message: 'Game title not found',
       });
     }
-    HandlerResponse(res.status(200), {
+
+    res.status(200).json({
       status: true,
       data: game,
       message: 'Game was founded !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,
@@ -74,13 +74,13 @@ const createGame = async (req, res) => {
     const game = gameRepository.create(req.body);
     const savedGame = await gameRepository.save(game);
 
-    HandlerResponse(res.status(201), {
+    res.status(201).json({
       status: true,
       data: savedGame,
       message: 'Game was created success !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,
@@ -101,7 +101,7 @@ const updateGame = async (req, res) => {
       id: req.params.id,
     });
     if (!game) {
-      return HandlerResponse(res.status(404), {
+      return res.status(404).json({
         status: false,
         data: savedGame,
         message: 'Game title not found !',
@@ -111,13 +111,13 @@ const updateGame = async (req, res) => {
     gameRepository.merge(game, req.body);
     const updatedGame = await gameRepository.save(game);
 
-    HandlerResponse(res.status(200), {
+    res.status(200).json({
       status: true,
       data: updatedGame,
       message: 'Game was updated success !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,
@@ -138,19 +138,20 @@ const deleteGame = async (req, res) => {
       id: req.params.id,
     });
     if (result.affected === 0) {
-      return HandlerResponse(res.status(404), {
+      return res.status(404).json({
         status: false,
         data: null,
         message: 'Delete game unsuccessfully !',
       });
     }
-    HandlerResponse(res.status(200), {
+
+    res.status(200).json({
       status: true,
       data: result,
       message: 'Delete game successfully !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,

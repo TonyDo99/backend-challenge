@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import pkg from 'lodash';
 import { AppDataSource } from '../model/index.js';
-import { HandlerResponse } from '../utils/response.js';
 
 const { omit } = pkg;
 
@@ -27,13 +26,13 @@ const userRegister = async (req, res) => {
 
     await userRepository.save(user);
 
-    HandlerResponse(res.status(201), {
+    res.status(201).json({
       status: true,
       data: omit(user, 'password'),
       message: 'User has register successfully !',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,
@@ -54,10 +53,10 @@ const userLogin = async (req, res) => {
     const user = await userRepository.findOneBy({ username });
 
     if (user == null || !(await bcrypt.compare(password, user.password))) {
-      return HandlerResponse(res, {
+      return res.status(401).json({
         status: false,
         data: null,
-        message: 'Invalid credentials',
+        message: 'Unauthorized',
       });
     }
 
@@ -69,13 +68,13 @@ const userLogin = async (req, res) => {
       }
     );
 
-    return HandlerResponse(res.status(200), {
+    res.status(200).json({
       status: true,
       data: { accessToken },
       message: 'Access token',
     });
   } catch (error) {
-    HandlerResponse(res.status(404), {
+    res.status(404).json({
       status: false,
       data: null,
       message: error.message,
